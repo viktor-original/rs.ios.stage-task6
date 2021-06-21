@@ -8,14 +8,14 @@ protocol CardBaseCompatible: Hashable, Codable {
     func hash(into hasher: inout Hasher)
 }
 
-enum Suit: Int, CaseIterable, Codable {
+enum Suit: Int, CaseIterable, Codable, Equatable {
     case clubs
     case spades
     case hearts
     case diamonds
 }
 
-enum Value: Int, Codable {
+enum Value: Int, CaseIterable, Codable, Equatable {
     case six
     case seven
     case eight
@@ -28,6 +28,7 @@ enum Value: Int, Codable {
 }
 
 struct Card: CardBaseCompatible {
+    
     let suit: Suit
     let value: Value
     var isTrump: Bool = false
@@ -37,17 +38,30 @@ struct Card: CardBaseCompatible {
     }
 
     static func == (lhs: Self, rhs: Self) -> Bool {
-        return false
+        lhs.isTrump == rhs.isTrump &&
+        lhs.value == rhs.value &&
+        lhs.suit == rhs.suit
     }
+    
 }
 
 extension Card {
 
     func checkIfCanBeat(card: Card) -> Bool {
-        return false
+        
+        if (card.suit != self.suit) && !self.isTrump {
+            return false
+        }
+        
+        if !card.isTrump && self.isTrump {
+            return true
+        }
+        
+        return checkValue(card: card)
+        
     }
 
     func checkValue(card: Card) -> Bool {
-        return false
+        return card.value.rawValue < self.value.rawValue
     }
 }

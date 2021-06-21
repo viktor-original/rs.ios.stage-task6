@@ -1,10 +1,3 @@
-//
-//  Player.swift
-//  DurakGame
-//
-//  Created by Дима Носко on 15.06.21.
-//
-
 import Foundation
 
 protocol PlayerBaseCompatible {
@@ -15,10 +8,30 @@ final class Player: PlayerBaseCompatible {
     var hand: [Card]?
 
     func checkIfCanTossWhenAttacking(card: Card) -> Bool {
-        false
+        
+        guard let currentHand = hand else { return false }
+        for currentCard in currentHand {
+            
+            if currentCard.value == card.value {
+                return true
+            }
+        
+        }
+        
+        return false
+        
     }
 
     func checkIfCanTossWhenTossing(table: [Card: Card]) -> Bool {
-        false
+        
+        for (firstPlayerCard, secondPlayerCard) in table {
+            
+            if checkIfCanTossWhenAttacking(card: firstPlayerCard) || checkIfCanTossWhenAttacking(card: secondPlayerCard) {
+                return true
+            }
+        }
+
+        return false
+        
     }
 }

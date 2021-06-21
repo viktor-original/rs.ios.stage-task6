@@ -13,8 +13,6 @@ enum DeckType:Int, CaseIterable, Codable {
 
 struct Deck: DeckBaseCompatible {
 
-    //MARK: - Properties
-
     var cards = [Card]()
     var type: DeckType
     var trump: Suit?
@@ -27,27 +25,63 @@ struct Deck: DeckBaseCompatible {
 extension Deck {
 
     init(with type: DeckType) {
+        
         self.type = type
+        cards = createDeck(suits: Suit.allCases, values: Value.allCases)
+        
     }
 
-    public func createDeck(suits:[Suit], values:[Value]) -> [Card] {
-        []
+    public mutating func createDeck(suits:[Suit], values:[Value]) -> [Card] {
+        
+        var newCards: [Card] = []
+        
+        for suit in suits {
+            
+            for value in values {
+                newCards.append(.init(suit: suit, value: value))
+            }
+        }
+        
+    return newCards
+        
     }
 
-    public func shuffle() {
-
+    public mutating func shuffle() {
+        cards.shuffle()
     }
 
-    public func defineTrump() {
-
+    public mutating func defineTrump() {
+        
+        if !cards.isEmpty {
+            trump = cards.last?.suit
+            setTrumpCards(for: trump!)
+        }
+        
     }
 
-    public func initialCardsDealForPlayers(players: [Player]) {
-
+    public mutating func initialCardsDealForPlayers(players: [Player]) {
+        
+        for player in players {
+            player.hand = Array(cards.dropFirst(6))
+            cards.removeFirst(6)
+        }
+        
     }
 
-    public func setTrumpCards(for suit:Suit) {
+    public mutating func setTrumpCards(for suit:Suit) {
+        
+        for card in 0..<cards.count {
+            
+            if cards[card].suit != suit{
+                cards[card].isTrump = false
+                
+            } else {
+                
+                cards[card].isTrump = true
+                
+            }
 
+        }
     }
 }
 

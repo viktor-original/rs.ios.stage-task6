@@ -1,10 +1,3 @@
-//
-//  Game.swift
-//  DurakGame
-//
-//  Created by Дима Носко on 16.06.21.
-//
-
 import Foundation
 
 protocol GameCompatible {
@@ -18,6 +11,25 @@ struct Game: GameCompatible {
 extension Game {
 
     func defineFirstAttackingPlayer(players: [Player]) -> Player? {
-        nil
+        
+        var startPlayer: Player?
+        var minTrump: Card = .init(suit: .hearts, value: .ace)
+        
+        for player in players {
+            
+            for card in player.hand! {
+                
+                if card.isTrump {
+                    
+                    if (card.value.rawValue < minTrump.value.rawValue) {
+                        startPlayer = player
+                        minTrump = card
+                    }
+                }
+            }
+        }
+        
+        return startPlayer
+        
     }
 }
